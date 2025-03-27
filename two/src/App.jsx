@@ -5,6 +5,7 @@ import Header from "./components/home/header/Header";
 import Product from "./components/home/Product";
 import InfiniteScrollTags from "./components/home/InfiniteLoopSlider";
 import ExplorePage from "./components/home/page/ExplorePage";
+import Explore from "./components/home/Explore";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           element={
             <>
               <HomePage />
+              <Explore/>
               <Product />
               <InfiniteScrollTags />
             </>
@@ -25,7 +27,9 @@ function App() {
 
         {/* Explore Page - ab neeche kar deya hia to only bas ye hee dekhga waha jane per */}
         <Route path="/explore" element={<ExplorePage />} />
+     
       </Routes>
+  
     </Router>
   );
 }
