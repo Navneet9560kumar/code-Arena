@@ -1,11 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null); // ✅ Fixed: Define setUser using useState
   const navigate = useNavigate();
+  // eslint-disable-next-line no-unused-vars
+  const { setData, setIsLoggedIn } = useAuthContext(); // ✅ Removed 'user' from destructuring
 
-  // Scroll to top aur navigate function
+  // Check if user is logged in
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user"));
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  }, []);
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+    setIsLoggedIn(false); // ✅ Properly update auth context
+    navigate("/");
+  };
+
+  // Scroll to top and navigate function
   const handleNavigation = (path) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     navigate(path);
@@ -18,30 +38,33 @@ const Header = () => {
 
       {/* Navigation */}
       <nav className="hidden md:flex space-x-8 ml-[-40px]">
-        <button
-          className="text-gray-300 hover:text-gray-100 transition"
-          onClick={() => handleNavigation("/explore")}
-        >
+        <button className="text-gray-300 hover:text-gray-100 transition" onClick={() => handleNavigation("/explore")}>
           Explore
         </button>
-        <button
-          className="text-gray-300 hover:text-gray-100 transition"
-          onClick={() => handleNavigation("/product")}
-        >
+        <button className="text-gray-300 hover:text-gray-100 transition" onClick={() => handleNavigation("/product")}>
           Product
         </button>
-        <button
-          className="text-gray-300 hover:text-gray-100 transition"
-          onClick={() => handleNavigation("/developer")}
-        >
+        <button className="text-gray-300 hover:text-gray-100 transition" onClick={() => handleNavigation("/developer")}>
           Developer
         </button>
-        <button
-          className="text-gray-300 hover:text-gray-100 transition"
-          onClick={() => handleNavigation("/signin")}
-        >
-          Sign In
-        </button>
+
+        {/* If User is Logged In, Show First Letter Else Show Sign In */}
+        {user ? (
+          <div className="relative group">
+            <button className="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg">
+              {user.name?.charAt(0).toUpperCase()}
+            </button>
+            <div className="absolute right-0 mt-2 w-32 bg-gray-800 text-white p-2 rounded-md shadow-lg hidden group-hover:block">
+              <button className="w-full text-left px-2 py-1 hover:bg-gray-700" onClick={handleLogout}>
+                Logout
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button className="text-gray-300 hover:text-gray-100 transition" onClick={() => navigate("/login")}>
+            Sign In
+          </button>
+        )}
       </nav>
 
       {/* Mobile Menu Button */}
@@ -54,10 +77,24 @@ const Header = () => {
       {/* Mobile Navigation */}
       {isOpen && (
         <div className="absolute top-12 right-4 bg-gray-900 bg-opacity-80 backdrop-blur-md p-4 rounded-lg shadow-lg md:hidden flex flex-col items-start space-y-4 z-50">
-          <button className="text-gray-300 hover:text-gray-100" onClick={() => handleNavigation("/explore")}>Explore</button>
-          <button className="text-gray-300 hover:text-gray-100" onClick={() => handleNavigation("/product")}>Product</button>
-          <button className="text-gray-300 hover:text-gray-100" onClick={() => handleNavigation("/developer")}>Developer</button>
-          <button className="text-gray-300 hover:text-gray-100" onClick={() => handleNavigation("/signin")}>Sign In</button>
+          <button className="text-gray-300 hover:text-gray-100" onClick={() => handleNavigation("/explore")}>
+            Explore
+          </button>
+          <button className="text-gray-300 hover:text-gray-100" onClick={() => handleNavigation("/product")}>
+            Product
+          </button>
+          <button className="text-gray-300 hover:text-gray-100" onClick={() => handleNavigation("/developer")}>
+            Developer
+          </button>
+          {user ? (
+            <button className="text-gray-300 hover:text-gray-100" onClick={handleLogout}>
+              Logout
+            </button>
+          ) : (
+            <button className="text-gray-300 hover:text-gray-100" onClick={() => handleNavigation("/login")}>
+              Sign In
+            </button>
+          )}
         </div>
       )}
     </header>

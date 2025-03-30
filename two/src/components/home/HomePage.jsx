@@ -1,7 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom"; 
 import Header from "./header/Header"; // Importing Header
 
 const HomePage = () => {
+  const navigate = useNavigate(); 
   return (
     <div className="relative w-full h-screen overflow-hidden">
       {/* Full-Screen Background */}
@@ -29,7 +31,9 @@ const HomePage = () => {
 
     {/* Buttons Section */}
     <div className="mt-6 flex gap-4">
-  <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300">
+  <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300"
+  onClick={() => navigate("/login")}
+  >
     Create Account
   </button>
   <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition duration-300">
